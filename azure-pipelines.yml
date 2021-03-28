@@ -23,6 +23,7 @@ variables:
   isRelease: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/users/')]
   isMasterOrRelease: $[or(eq(variables.isMaster, true), eq(variables.isRelease, true))]
   disable.coverage.autogenerate: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 stages:
 - stage: Build

@@ -106,7 +106,7 @@ stages:
         azureSubscription: 'msdn_319723_service_principal'
         appType: 'functionApp'
         appName: 'darty-api'
-        package: '$(System.DefaultWorkingDirectory)/_jkdmyrs.darty/drop/Darty.API/Darty.API.zip'
+        package: '$(Pipeline.Workspace)/drop/Darty.API/Darty.API.zip'
 
     - task: ExtractFiles@1
       displayName: 'extract darty-web'

@@ -31,7 +31,7 @@ namespace Darty.API.Functions
         }
 
         [FunctionName(Constants.CreateGame)]
-        public async Task<IActionResult> CreateGame([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "darty/game")]
+        public async Task<IActionResult> CreateGame([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "game")]
             HttpRequest req)
         {
             // get params
@@ -43,7 +43,7 @@ namespace Darty.API.Functions
         }
 
         [FunctionName(Constants.GetGameById)]
-        public async Task<IActionResult> GetGameById([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "darty/game")]
+        public async Task<IActionResult> GetGameById([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "game")]
             HttpRequest req)
         {
             // get params
@@ -58,7 +58,7 @@ namespace Darty.API.Functions
         }
 
         [FunctionName(Constants.DartThrow)]
-        public async Task<IActionResult> DartThrow([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "darty/dart-throw")]
+        public async Task<IActionResult> DartThrow([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "dart-throw")]
             HttpRequest req)
         {
             // get params

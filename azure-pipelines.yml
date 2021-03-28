@@ -20,7 +20,7 @@ pool:
 
 variables:
   isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
-  isRelease: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/users/')]
+  isRelease: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')]
   isMasterOrRelease: $[or(eq(variables.isMaster, true), eq(variables.isRelease, true))]
   disable.coverage.autogenerate: 'true'
   DOTNET_CLI_TELEMETRY_OPTOUT: true

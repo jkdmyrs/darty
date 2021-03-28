@@ -112,12 +112,12 @@ stages:
       displayName: 'extract darty-web'
       inputs:
         archiveFilePatterns: '$(Pipeline.Workspace)/drop/Darty.Web/Darty.Web.zip'
-        destinationFolder: '$(System.DefaultWorkingDirectory)/darty-web-staging/'
+        destinationFolder: '$(Build.Repository.LocalPath)/dist/'
 
     - task: AzureStaticWebApp@0
       displayName: 'deploy darty-web'
       inputs:
-        app_location: "$(System.DefaultWorkingDirectory)/darty-web-staging/wwwroot/"
+        app_location: "/dist/wwwroot/"
       env:
         azure_static_web_apps_api_token: '98107d2011fa0980358fb47fa1fcd7cc255d678ed705069ed5be6f2059ca3435-26fcad21-709b-4bce-9eb0-d52fb08d182d00f7889'
 

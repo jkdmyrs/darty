@@ -28,7 +28,7 @@ variables:
 stages:
 - stage: Build
   jobs:
-  - job: restore
+  - job: Build
     steps:  
     - task: UseDotNet@2
       displayName: 'Use .NET Core sdk 3.1.x'
@@ -95,7 +95,7 @@ stages:
   dependsOn: Build
   condition: and(succeeded(), eq(variables.isMasterOrRelease, true))
   jobs:
-  - job: deploy darty dev
+  - job: DEV
     steps:
     - download: current
       artifact: drop

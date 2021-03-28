@@ -5,6 +5,6 @@
 
     public interface IGetGameByIdOperation
     {
-        Task<CricketGameModel> Execute(string gameId);
+        Task<GameModel> Execute(string gameId);
     }
 }

@@ -1,17 +1,29 @@
 ﻿namespace Darty.Core.Operations.Impl
 {
+    using Darty.Core.Commands.Interfaces;
+    using Darty.Core.Mappers;
     using Darty.Core.Models;
     using Darty.Core.Operations.Interfaces;
     using System;
-    using System.Collections.Generic;
-    using System.Text;
     using System.Threading.Tasks;
 
     public class DartThrowOperation : IDartThrowOperation
     {
-        public Task<CricketGameModel> Execute(string gameId, string player, int value, int multiplier)
+        private readonly IGetGameByIdOperation _getGame;
+        private readonly IPersistGameCommand _persistGame;
+
+        public DartThrowOperation(IGetGameByIdOperation getGame, IPersistGameCommand persistGame)
         {
-            throw new NotImplementedException();
+            _persistGame = persistGame ?? throw new ArgumentNullException(nameof(persistGame));
+            _getGame = getGame ?? throw new ArgumentException(nameof(getGame));
+        }
+
+        public async Task<GameModel> Execute(string gameId, string player, int value, int multiplier)
+        {
+            var game = await _getGame.Execute(gameId).ConfigureAwait(false);
+            game.DartThrow(player, value, multiplier);
+            await _persistGame.Execute(game.MapToDataResource()).ConfigureAwait(false);
+            return game;
         }
     }
 }

@@ -5,13 +5,13 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public class CricketGameModel
+    public class GameModel
     {
         private static readonly List<int> _requiredValues = new List<int> { 20, 19, 18, 17, 16, 15, 25 };
         private string _player1Name;
         private string _player2Name;
 
-        public CricketGameModel(string player1Name, string player2Name)
+        public GameModel(string player1Name, string player2Name)
         {
             _player1Name = player1Name;
             _player2Name = player2Name;
@@ -19,7 +19,7 @@
             Id = Guid.NewGuid();
         }
 
-        public CricketGameModel(string player1Name, string player2Name, IList<(int Value, int Multiplier, string Player)> gameHistory, string gameId)
+        public GameModel(string player1Name, string player2Name, IList<(int Value, int Multiplier, string Player)> gameHistory, string gameId)
         {
             _player1Name = player1Name;
             _player2Name = player2Name;

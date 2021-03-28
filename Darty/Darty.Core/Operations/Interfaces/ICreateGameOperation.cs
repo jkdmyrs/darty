@@ -1,6 +1,5 @@
 ﻿namespace Darty.Core.Operations.Interfaces
 {
-    using System;
     using System.Threading.Tasks;
 
     public interface ICreateGameOperation

@@ -61,6 +61,18 @@
             {
                 throw new DartyAPIException(StatusCodes.Status400BadRequest, invalidPlayer.Message);
             }
+            catch (GameOverException gameOver)
+            {
+                throw new DartyAPIException(StatusCodes.Status409Conflict, gameOver.Message);
+            }
+            catch (InvalidDartMultiplierException invalidMultiplier)
+            {
+                throw new DartyAPIException(StatusCodes.Status400BadRequest, invalidMultiplier.Message);
+            }
+            catch (InvalidDartValueException invalidValue)
+            {
+                throw new DartyAPIException(StatusCodes.Status400BadRequest, invalidValue.Message);
+            }
         }
     }
 }

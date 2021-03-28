@@ -5,6 +5,6 @@
 
     public interface IDartThrowOperation
     {
-        Task<CricketGameModel> Execute(string gameId, string player, int value, int multiplier);
+        Task<GameModel> Execute(string gameId, string player, int value, int multiplier);
     }
 }

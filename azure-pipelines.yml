@@ -111,7 +111,7 @@ stages:
     - task: ExtractFiles@1
       displayName: 'extract darty-web'
       inputs:
-        archiveFilePatterns: '**/Darty.Web.zip'
+        archiveFilePatterns: '$(Pipeline.Workspace)/drop/Darty.Web/Darty.Web.zip'
         destinationFolder: '$(System.DefaultWorkingDirectory)/darty-web-staging/'
 
     - script: ls

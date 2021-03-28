@@ -53,7 +53,7 @@ stages:
       displayName: dotnet test
       inputs:
         command: 'test'
-        projects: '**/jkdmyrs.sln'
+        projects: '**/Darty.sln'
         arguments: '-c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Darty.*]*" /p:Exclude="[Darty.*.Tests]*"'
 
     - task: DotNetCoreCLI@2

@@ -114,10 +114,6 @@ stages:
         archiveFilePatterns: '$(Pipeline.Workspace)/drop/Darty.Web/Darty.Web.zip'
         destinationFolder: '$(System.DefaultWorkingDirectory)/darty-web-staging/'
 
-    - script: ls
-      workingDirectory: '$(System.DefaultWorkingDirectory)/darty-web-staging/'
-      displayName: 'Command Line Script'
-
     - task: AzureStaticWebApp@0
       displayName: 'deploy darty-web'
       inputs:

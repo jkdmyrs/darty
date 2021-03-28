@@ -28,7 +28,7 @@ stages:
   jobs:
   - job: restore
     steps:  
-    - task: UseDotNet@3.1
+    - task: UseDotNet@2
       displayName: 'Use .NET Core sdk 3.1.x'
       inputs:
         packageType: sdk

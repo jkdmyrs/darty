@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darty.iOS", "Darty.iOS\Darty.iOS.csproj", "{5379474A-F6BC-428A-9B90-32BDB585D346}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darty.iOS", "src\Darty.iOS\Darty.iOS.csproj", "{5379474A-F6BC-428A-9B90-32BDB585D346}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darty.Core", "Darty.Core\Darty.Core.csproj", "{A4F3CB5A-7546-4D2F-B7A5-7F4E25B6568D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darty.Core", "src\Darty.Core\Darty.Core.csproj", "{A4F3CB5A-7546-4D2F-B7A5-7F4E25B6568D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darty.Web", "Darty.Web\Darty.Web.csproj", "{4F9137D8-7278-48B2-A1B7-7088E66433B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darty.Web", "src\Darty.Web\Darty.Web.csproj", "{4F9137D8-7278-48B2-A1B7-7088E66433B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darty.API", "Darty.API\Darty.API.csproj", "{287E7E0B-4FEF-4F60-AC71-9DCA2C52B746}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darty.API", "src\Darty.API\Darty.API.csproj", "{287E7E0B-4FEF-4F60-AC71-9DCA2C52B746}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E4C96F4A-B4AF-4028-8A61-6EAE31C3EEF4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{72DA06BC-08A5-4312-B677-DC69EEFDAE1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darty.Core.Tests", "Darty.Core.Tests\Darty.Core.Tests.csproj", "{616979F0-B77B-4C38-860B-70AF8CDBB961}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darty.Core.Tests", "test\Darty.Core.Tests\Darty.Core.Tests.csproj", "{616979F0-B77B-4C38-860B-70AF8CDBB961}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

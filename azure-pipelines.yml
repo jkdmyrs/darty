@@ -22,6 +22,7 @@ variables:
   isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
   isRelease: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/users/')]
   isMasterOrRelease: $[or(eq(variables.isMaster, true), eq(variables.isRelease, true))]
+  disable.coverage.autogenerate: 'true'
 
 stages:
 - stage: Build
@@ -47,6 +48,51 @@ stages:
         command: 'build'
         projects: '**/Darty.sln'
         arguments: '-c Release --no-restore'
+
+    - task: DotNetCoreCLI@2
+      displayName: dotnet test
+      inputs:
+        command: 'test'
+        projects: '**/jkdmyrs.sln'
+        arguments: '-c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Darty.*]*" /p:Exclude="[Darty.*.Tests]*"'
+
+    - task: DotNetCoreCLI@2
+      displayName: dotnet publish (Darty.API)
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '**/Darty.API.csproj'
+        arguments: '-c Release --no-build -o $(Build.ArtifactStagingDirectory)/out/Darty.API/'
+
+    - task: DotNetCoreCLI@2
+      displayName: dotnet publish (Darty.Web)
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '**/Darty.Web.csproj'
+        arguments: '-c Release --no-build -o $(Build.ArtifactStagingDirectory)/out/Darty.Web/'
+
+    - task: PublishBuildArtifacts@1
+      displayName: publish drop
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/out'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+
+    - task: reportgenerator@4
+      displayName: 'generate code coverate report'
+      inputs:
+        reports: '**/test/**/coverage.cobertura.xml'
+        targetdir: '$(Build.ArtifactStagingDirectory)/TestResults/'
+
+    - task: PublishCodeCoverageResults@1
+      displayName: 'publish code coverage report'
+      inputs:
+        codeCoverageTool: cobertura
+        summaryFileLocation: $(Build.ArtifactStagingDirectory)/TestResults/Cobertura.xml
+        # To make the task not regenerate the report an environment variable was added to the pipeline in Azure DevOps; "disable.coverage.autogenerate: 'true'"
+        # see: https://github.com/danielpalme/ReportGenerator/wiki/Integration#attention
+        reportDirectory: '$(Build.ArtifactStagingDirectory)/TestResults/'
 
 - stage: DEV
   dependsOn: Build

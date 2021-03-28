@@ -73,12 +73,8 @@ stages:
         projects: '**/Darty.Web.csproj'
         arguments: '-c Release --no-build -o $(Build.ArtifactStagingDirectory)/out/Darty.Web/'
 
-    - task: PublishBuildArtifacts@1
-      displayName: publish drop
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/out'
-        ArtifactName: 'drop'
-        publishLocation: 'Container'
+    - publish: $(Build.ArtifactStagingDirectory)/out
+      artifact: drop
 
     - task: reportgenerator@4
       displayName: 'generate code coverate report'
@@ -99,8 +95,30 @@ stages:
   dependsOn: Build
   condition: and(succeeded(), eq(variables.isMasterOrRelease, true))
   jobs:
-  - job: functions
-  - job: web
+  - job: deploy darty dev
+    steps:
+    - download: current
+      artifact: drop
+
+    - task: AzureFunctionApp@1
+      displayName: 'deploy darty-api'
+      inputs:
+        azureSubscription: 'msdn_319723_service_principal'
+        appType: 'functionApp'
+        appName: 'darty-api'
+        package: '$(System.DefaultWorkingDirectory)/_jkdmyrs.darty/drop/Darty.API/Darty.API.zip'
+
+    - task: ExtractFiles@1
+      displayName: 'extract darty-web'
+      inputs:
+        archiveFilePatterns: '**/Darty.Web.zip'
+        destinationFolder: '$(System.DefaultWorkingDirectory)/darty-web-staging/'
+
+    - task: AzureStaticWebApp@0
+      inputs:
+        app_location: "$(System.DefaultWorkingDirectory)/darty-web-staging/Darty.Web/wwwroot/"
+      env:
+        azure_static_web_apps_api_token: '98107d2011fa0980358fb47fa1fcd7cc255d678ed705069ed5be6f2059ca3435-26fcad21-709b-4bce-9eb0-d52fb08d182d00f7889'
 
 - stage: PROD
   condition: and(succeeded(), eq(variables.isRelease, true))

@@ -102,11 +102,41 @@ stages:
         # see: https://github.com/danielpalme/ReportGenerator/wiki/Integration#attention
         reportDirectory: '$(Build.ArtifactStagingDirectory)/TestResults/'
 
-- stage: DEV
+- stage: Dev
   dependsOn: Build
   condition: and(succeeded(), eq(variables.isMasterOrRelease, true))
   jobs:
-  - job: DEV
+  - job: Dev
+    steps:
+    - download: current
+      artifact: drop
+
+    - task: AzureFunctionApp@1
+      displayName: 'deploy darty-api-dev'
+      inputs:
+        azureSubscription: 'msdn_319723_service_principal'
+        appType: 'functionApp'
+        appName: 'darty-api-dev'
+        package: '$(Pipeline.Workspace)/drop/Darty.API/Darty.API.zip'
+
+    - task: ExtractFiles@1
+      displayName: 'extract darty-web'
+      inputs:
+        archiveFilePatterns: '$(Pipeline.Workspace)/drop/Darty.Web/Darty.Web.zip'
+        destinationFolder: '$(Build.Repository.LocalPath)/dist/'
+
+    - task: AzureStaticWebApp@0
+      displayName: 'deploy darty-web-dev'
+      inputs:
+        app_location: "/dist/wwwroot/"
+      env:
+        azure_static_web_apps_api_token: '$(darty-web-dev-deploy-token)'
+
+- stage: Prod
+  dependsOn: Dev
+  condition: and(succeeded(), eq(variables.isRelease, true))
+  jobs:
+  - job: Prod
     steps:
     - download: current
       artifact: drop
@@ -131,10 +161,4 @@ stages:
         app_location: "/dist/wwwroot/"
       env:
         azure_static_web_apps_api_token: '$(darty-web-deploy-token)'
-
-- stage: PROD
-  condition: and(succeeded(), eq(variables.isRelease, true))
-  jobs:
-  - job: functions
-  - job: web
 

@@ -5,6 +5,7 @@ using Darty.Core.Operations.Interfaces;
 using Darty.Core.Settings;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 [assembly: FunctionsStartup(typeof(Darty.API.Startup))]
 namespace Darty.API

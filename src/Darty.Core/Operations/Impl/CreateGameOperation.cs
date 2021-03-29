@@ -16,11 +16,10 @@
             _persistGame = persistGame ?? throw new ArgumentNullException(nameof(persistGame));
         }
 
-        public async Task<string> Execute(string player1, string player2)
+        public async Task Execute(string player1, string player2, string gameId)
         {
-            var game = new GameModel(player1, player2);
+            var game = new GameModel(player1, player2, gameId);
             await _persistGame.Execute(game.MapToDataResource()).ConfigureAwait(false);
-            return game.Id.ToString();
         }
     }
 }

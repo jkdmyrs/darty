@@ -4,6 +4,6 @@
 
     public interface ICreateGameOperation
     {
-        Task<string> Execute(string player1, string player2);
+        Task Execute(string player1, string player2, string gameId);
     }
 }

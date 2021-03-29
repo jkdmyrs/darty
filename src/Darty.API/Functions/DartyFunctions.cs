@@ -18,31 +18,35 @@ namespace Darty.API.Functions
         private readonly ICreateGameOperation _createGame;
         private readonly IDartThrowOperation _dartThrow;
         private readonly IGetGameByIdOperation _getGame;
+        private readonly ICreateGameIdOperation _generateGameId;
 
         public DartyFunctions(ICreateGameOperation createGame,
                               IDartThrowOperation dartThrow,
                               IGetGameByIdOperation getGame,
+                              ICreateGameIdOperation generateGameId,
                               ILogger<DartyFunctions> logger)
             : base (logger)
         {
             _createGame = createGame ?? throw new ArgumentNullException(nameof(createGame));
             _dartThrow = dartThrow ?? throw new ArgumentNullException(nameof(dartThrow));
             _getGame = getGame ?? throw new ArgumentNullException(nameof(getGame));
+            _generateGameId = generateGameId ?? throw new ArgumentNullException(nameof(generateGameId));
         }
 
-        [FunctionName(Constants.CreateGame)]
+        [FunctionName(FunctionNames.CreateGame)]
         public async Task<IActionResult> CreateGame([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "game")]
             HttpRequest req)
         {
             // get params
+            string gameId = req.Query["game"];
             string player1 = req.Query["player1"];
             string player2 = req.Query["player2"];
 
             // run
-            return await this.RunAsync<string>(_createGame.Execute(player1, player2)).ConfigureAwait(false);
+            return await RunAsync(_createGame.Execute(player1, player2, gameId)).ConfigureAwait(false);
         }
 
-        [FunctionName(Constants.GetGameById)]
+        [FunctionName(FunctionNames.GetGameById)]
         public async Task<IActionResult> GetGameById([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "game")]
             HttpRequest req)
         {
@@ -54,10 +58,10 @@ namespace Darty.API.Functions
                 => (await _getGame.Execute(gameId).ConfigureAwait(false)).MapToResponse();
             
             // run
-            return await this.RunAsync<GameModelResponse>(GetGameAndMapToResponse()).ConfigureAwait(false);
+            return await RunAsync<GameModelResponse>(GetGameAndMapToResponse()).ConfigureAwait(false);
         }
 
-        [FunctionName(Constants.DartThrow)]
+        [FunctionName(FunctionNames.DartThrow)]
         public async Task<IActionResult> DartThrow([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "dart-throw")]
             HttpRequest req)
         {
@@ -78,7 +82,15 @@ namespace Darty.API.Functions
                 => (await _dartThrow.Execute(gameId, player, value, multiplier).ConfigureAwait(false)).MapToResponse();
 
             // run
-            return await this.RunAsync<GameModelResponse>(DartThrowAndMapToResponse()).ConfigureAwait(false);
+            return await RunAsync<GameModelResponse>(DartThrowAndMapToResponse()).ConfigureAwait(false);
+        }
+
+        [FunctionName(FunctionNames.GenerateGameId)]
+        public async Task<IActionResult> GenerateGameId([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "id")]
+            HttpRequest req)
+        {
+            // run
+            return await RunAsync<string>(_generateGameId.Execute()).ConfigureAwait(false);
         }
     }
 }

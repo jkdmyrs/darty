@@ -20,20 +20,41 @@
         {
             try
             {
-                // do work and return
-                var result = await this.HandleCoreExceptions(work).ConfigureAwait(false);
+                T result = await work.ConfigureAwait(false);
                 return new OkObjectResult(result);
             }
-            catch (DartyAPIException knownError)
+            catch (Exception e)
             {
-                _logger.LogWarning($"Known error was handled. StatusCode: {knownError.Error.Code}, Message: {knownError.Error.Message}");
-                // handle known errors
-                return new ObjectResult(knownError.Error)
-                {
-                    StatusCode = knownError.Code
-                };
+                return HandleException(e);
+            }
+        }
+
+        public async Task<IActionResult> RunAsync(Task work)
+        {
+            try
+            {
+                await work.ConfigureAwait(false);
+                return new OkResult();
             }
             catch (Exception e)
+            {
+                return HandleException(e);
+            }
+        }
+
+        private IActionResult HandleException(Exception e)
+        {
+            if (TryHandleCoreException(e, out Exception newException))
+            {
+                DartyAPIException handledException = newException as DartyAPIException;
+                _logger.LogWarning($"Known error was handled. StatusCode: {handledException.Error.Code}, Message: {handledException.Error.Message}");
+                // handle known errors
+                return new ObjectResult(handledException.Error)
+                {
+                    StatusCode = handledException.Code
+                };
+            }
+            else
             {
                 _logger.LogError($"Unknown error. Message: {e.Message}");
                 // 500 on unknown errors
@@ -41,38 +62,40 @@
             }
         }
 
-        /// <summary>
-        /// Converts an Exception from Darty.Core to a DartyException.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="work"></param>
-        /// <returns></returns>
-        private async Task<T> HandleCoreExceptions<T>(Task<T> work)
+        private bool TryHandleCoreException(Exception maybeCoreException, out Exception e)
         {
-            try
+            if (maybeCoreException is NotImplementedException notImplemented)
             {
-                return await work.ConfigureAwait(false);
+                e = new DartyAPIException(StatusCodes.Status501NotImplemented, notImplemented.Message);
             }
-            catch (GameNotFoundException gameNotFound)
+            else if (maybeCoreException is GameNotFoundException gameNotFound)
             {
-                throw new DartyAPIException(StatusCodes.Status404NotFound, gameNotFound.Message);
+                e = new DartyAPIException(StatusCodes.Status404NotFound, gameNotFound.Message);
             }
-            catch (InvalidPlayerException invalidPlayer)
+            else if (maybeCoreException is InvalidPlayerException invalidPlayer)
             {
-                throw new DartyAPIException(StatusCodes.Status400BadRequest, invalidPlayer.Message);
+                e = new DartyAPIException(StatusCodes.Status400BadRequest, invalidPlayer.Message);
             }
-            catch (GameOverException gameOver)
+            else if (maybeCoreException is GameOverException gameOver)
             {
-                throw new DartyAPIException(StatusCodes.Status409Conflict, gameOver.Message);
+                e = new DartyAPIException(StatusCodes.Status409Conflict, gameOver.Message);
             }
-            catch (InvalidDartMultiplierException invalidMultiplier)
+            else if (maybeCoreException is InvalidDartMultiplierException invalidMultiplier)
             {
-                throw new DartyAPIException(StatusCodes.Status400BadRequest, invalidMultiplier.Message);
+                e = new DartyAPIException(StatusCodes.Status400BadRequest, invalidMultiplier.Message);
             }
-            catch (InvalidDartValueException invalidValue)
+            else if (maybeCoreException is InvalidDartValueException invalidValue)
             {
-                throw new DartyAPIException(StatusCodes.Status400BadRequest, invalidValue.Message);
+                e = new DartyAPIException(StatusCodes.Status400BadRequest, invalidValue.Message);
             }
+            else
+            {
+                e = maybeCoreException;
+                // was not handle-able
+                return false;
+            }
+            // was handled
+            return true;
         }
     }
 }

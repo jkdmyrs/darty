@@ -11,12 +11,12 @@
         private string _player1Name;
         private string _player2Name;
 
-        public GameModel(string player1Name, string player2Name)
+        public GameModel(string player1Name, string player2Name, string gameId)
         {
             _player1Name = player1Name;
             _player2Name = player2Name;
             ThrowHistory = new List<(int Value, int Multiplier, string Player)>();
-            Id = Guid.NewGuid();
+            Id = gameId;
         }
 
         public GameModel(string player1Name, string player2Name, IList<(int Value, int Multiplier, string Player)> gameHistory, string gameId)
@@ -24,10 +24,10 @@
             _player1Name = player1Name;
             _player2Name = player2Name;
             ThrowHistory = new List<(int Value, int Multiplier, string Player)>();
-            Id = Guid.Parse(gameId);
+            Id = gameId;
         }
 
-        public Guid Id { get; }
+        public string Id { get; }
 
         public (string Name, int Score, bool IsWinner) Player1
         {

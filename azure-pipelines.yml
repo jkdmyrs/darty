@@ -19,11 +19,22 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
-  isRelease: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')]
-  isMasterOrRelease: $[or(eq(variables.isMaster, true), eq(variables.isRelease, true))]
-  disable.coverage.autogenerate: 'true'
-  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  - group: darty-secrets
+
+  - name: isMaster
+    value: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+
+  - name: isRelease
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')]
+
+  - name: isMasterOrRelease
+    value: $[or(eq(variables.isMaster, true), eq(variables.isRelease, true))]
+
+  - name: disable.coverage.autogenerate
+    value: 'true'
+
+  - name: DOTNET_CLI_TELEMETRY_OPTOUT
+    value: true
 
 stages:
 - stage: Build
@@ -119,7 +130,7 @@ stages:
       inputs:
         app_location: "/dist/wwwroot/"
       env:
-        azure_static_web_apps_api_token: '98107d2011fa0980358fb47fa1fcd7cc255d678ed705069ed5be6f2059ca3435-26fcad21-709b-4bce-9eb0-d52fb08d182d00f7889'
+        azure_static_web_apps_api_token: '$(darty-web-deploy-token)'
 
 - stage: PROD
   condition: and(succeeded(), eq(variables.isRelease, true))

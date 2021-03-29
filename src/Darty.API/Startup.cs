@@ -28,7 +28,7 @@ namespace Darty.API
             // settings 
             builder.Services.AddSingleton<BlobStorageSettings>(new BlobStorageSettings
             {
-                ConnecitonString = "",
+                ConnecitonString = Environment.GetEnvironmentVariable("GameBlobStorageConnectionString"),
                 GameContainer = "darty-games"
             });
         }

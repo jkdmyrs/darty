@@ -15,7 +15,7 @@ namespace Darty.Web
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.AddSingleton(new AppSettings { SignalRHubBaseUrl = $"{baseUrl}/api" });
+            builder.Services.AddSingleton(new AppSettings { SignalRHubBaseUrl = $"{baseUrl}" });
 
             builder.Services.AddScoped(sp => new HttpClient());
             builder.Services.AddScoped(sp => new DartyApiClient(baseUrl, sp.GetService<HttpClient>()));

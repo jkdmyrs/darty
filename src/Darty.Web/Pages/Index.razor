@@ -1,5 +1,9 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Darty.Core
+@using Darty.Core.Resources.Responses
 @inject Darty.Core.ApiClient.DartyApiClient _apiClient
+@inject AppSettings _appSettings;
 
 <h1>Hello, world!</h1>
 
@@ -8,10 +12,18 @@ Welcome to your new app.
 <SurveyPrompt Title="How is Blazor working for you?" />
 
 @code {
+    private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await _apiClient.GenerateGameId().ConfigureAwait(false);
-        var result2 = await _apiClient.GetGameById("3BYSYC").ConfigureAwait(false);
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(_appSettings.SignalRHubBaseUrl)
+            .Build();
+
+        hubConnection.On(Targets.NewGame, (string id) => Console.WriteLine($"NEW GAME: {id}"));
+
+        hubConnection.On(Targets.DartThrow, (string id) => Console.WriteLine($"DART THROW: {id}"));
+
+        await hubConnection.StartAsync().ConfigureAwait(false);
     }
 }

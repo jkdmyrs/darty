@@ -14,6 +14,7 @@ namespace Darty.API.Functions
     using System.Threading.Tasks;
     using Microsoft.Azure.WebJobs.Extensions.SignalRService;
     using Darty.API.Constants;
+    using Darty.Core;
 
     public class DartyFunctions : BaseDartyFunctionHandler
     {
@@ -51,9 +52,8 @@ namespace Darty.API.Functions
                 await _createGame.Execute(player1, player2, gameId).ConfigureAwait(false);
                 await signalRMessages.AddAsync(new SignalRMessage
                 {
-                    UserId = gameId,
                     Target = Targets.NewGame,
-                    Arguments = Array.Empty<object>()
+                    Arguments = new[] { gameId }
                 }).ConfigureAwait(false);
             }
 
@@ -99,9 +99,8 @@ namespace Darty.API.Functions
                 await _dartThrow.Execute(gameId, player, value, multiplier).ConfigureAwait(false);
                 await signalRMessages.AddAsync(new SignalRMessage
                 {
-                    UserId = gameId,
                     Target = Targets.DartThrow,
-                    Arguments = Array.Empty<object>()
+                    Arguments = new[] { gameId }
                 }).ConfigureAwait(false);
             }
 
@@ -119,7 +118,7 @@ namespace Darty.API.Functions
 
         [FunctionName(FunctionNames.NegotiateSignalR)]
         public SignalRConnectionInfo GetSignalRInfo(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "connect")] HttpRequest req, 
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "negotiate")] HttpRequest req, 
             [SignalRConnectionInfo(HubName = HubNames.GameHub)] SignalRConnectionInfo connectionInfo)
         {
             return connectionInfo;

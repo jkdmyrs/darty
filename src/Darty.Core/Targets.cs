@@ -1,4 +1,4 @@
-﻿namespace Darty.API.Constants
+﻿namespace Darty.Core
 {
     public static class Targets
     {

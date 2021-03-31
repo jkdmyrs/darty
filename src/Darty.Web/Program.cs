@@ -14,7 +14,7 @@ namespace Darty.Web
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddScoped(sp => new HttpClient());
-            builder.Services.AddScoped(sp => new DartyApiClient("http://localhost:7071", sp.GetService<HttpClient>()));
+            builder.Services.AddScoped(sp => new DartyApiClient("https://darty-api-dev.azurewebsites.net", sp.GetService<HttpClient>()));
 
             await builder.Build().RunAsync();
         }

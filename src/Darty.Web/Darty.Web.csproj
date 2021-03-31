@@ -12,4 +12,8 @@
     <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Darty.Core\Darty.Core.csproj" />
+  </ItemGroup>
+
 </Project>

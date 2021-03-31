@@ -12,6 +12,8 @@ namespace Darty.API.Functions
     using Microsoft.Extensions.Logging;
     using System;
     using System.Threading.Tasks;
+    using Microsoft.Azure.WebJobs.Extensions.SignalRService;
+    using Darty.API.Constants;
 
     public class DartyFunctions : BaseDartyFunctionHandler
     {
@@ -34,21 +36,34 @@ namespace Darty.API.Functions
         }
 
         [FunctionName(FunctionNames.CreateGame)]
-        public async Task<IActionResult> CreateGame([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "game")]
-            HttpRequest req)
+        public async Task<IActionResult> CreateGame(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "game")] HttpRequest req,
+            [SignalR(HubName = HubNames.GameHub)] IAsyncCollector<SignalRMessage> signalRMessages)
         {
             // get params
             string gameId = req.Query["game"];
             string player1 = req.Query["player1"];
             string player2 = req.Query["player2"];
 
+            // create work
+            async Task CreateGameAndSendSignalRMessage()
+            {
+                await _createGame.Execute(player1, player2, gameId).ConfigureAwait(false);
+                await signalRMessages.AddAsync(new SignalRMessage
+                {
+                    UserId = gameId,
+                    Target = Targets.NewGame,
+                    Arguments = Array.Empty<object>()
+                }).ConfigureAwait(false);
+            }
+
             // run
-            return await RunAsync(_createGame.Execute(player1, player2, gameId)).ConfigureAwait(false);
+            return await RunAsync(CreateGameAndSendSignalRMessage()).ConfigureAwait(false);
         }
 
         [FunctionName(FunctionNames.GetGameById)]
-        public async Task<IActionResult> GetGameById([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "game")]
-            HttpRequest req)
+        public async Task<IActionResult> GetGameById(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "game")] HttpRequest req)
         {
             // get params
             string gameId = req.Query["game"];
@@ -62,8 +77,9 @@ namespace Darty.API.Functions
         }
 
         [FunctionName(FunctionNames.DartThrow)]
-        public async Task<IActionResult> DartThrow([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "dart-throw")]
-            HttpRequest req)
+        public async Task<IActionResult> DartThrow(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "throw")] HttpRequest req,
+            [SignalR(HubName = HubNames.GameHub)] IAsyncCollector<SignalRMessage> signalRMessages)
         {
             // get params
             string gameId = req.Query["game"];
@@ -78,11 +94,19 @@ namespace Darty.API.Functions
             }
             
             // create work
-            async Task<GameModelResponse> DartThrowAndMapToResponse()
-                => (await _dartThrow.Execute(gameId, player, value, multiplier).ConfigureAwait(false)).MapToResponse();
+            async Task DartThrowAndSendSignalRMessage()
+            {
+                await _dartThrow.Execute(gameId, player, value, multiplier).ConfigureAwait(false);
+                await signalRMessages.AddAsync(new SignalRMessage
+                {
+                    UserId = gameId,
+                    Target = Targets.DartThrow,
+                    Arguments = Array.Empty<object>()
+                }).ConfigureAwait(false);
+            }
 
             // run
-            return await RunAsync<GameModelResponse>(DartThrowAndMapToResponse()).ConfigureAwait(false);
+            return await RunAsync(DartThrowAndSendSignalRMessage()).ConfigureAwait(false);
         }
 
         [FunctionName(FunctionNames.GenerateGameId)]
@@ -91,6 +115,14 @@ namespace Darty.API.Functions
         {
             // run
             return await RunAsync<string>(_generateGameId.Execute()).ConfigureAwait(false);
+        }
+
+        [FunctionName(FunctionNames.NegotiateSignalR)]
+        public SignalRConnectionInfo GetSignalRInfo(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "connect")] HttpRequest req, 
+            [SignalRConnectionInfo(HubName = HubNames.GameHub)] SignalRConnectionInfo connectionInfo)
+        {
+            return connectionInfo;
         }
     }
 }

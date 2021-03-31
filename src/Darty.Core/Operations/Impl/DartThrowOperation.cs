@@ -2,7 +2,6 @@
 {
     using Darty.Core.Commands.Interfaces;
     using Darty.Core.Mappers;
-    using Darty.Core.Models;
     using Darty.Core.Operations.Interfaces;
     using System;
     using System.Threading.Tasks;
@@ -18,12 +17,11 @@
             _getGame = getGame ?? throw new ArgumentException(nameof(getGame));
         }
 
-        public async Task<GameModel> Execute(string gameId, string player, int value, int multiplier)
+        public async Task Execute(string gameId, string player, int value, int multiplier)
         {
             var game = await _getGame.Execute(gameId).ConfigureAwait(false);
             game.DartThrow(player, value, multiplier);
             await _persistGame.Execute(game.MapToDataResource()).ConfigureAwait(false);
-            return game;
         }
     }
 }

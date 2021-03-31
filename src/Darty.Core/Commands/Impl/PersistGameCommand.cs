@@ -1,9 +1,10 @@
 ﻿namespace Darty.Core.Commands.Impl
 {
-    using Azure.Storage.Blobs;
     using Darty.Core.Commands.Interfaces;
     using Darty.Core.Resources.Data;
     using Darty.Core.Settings;
+    using Microsoft.WindowsAzure.Storage;
+    using Microsoft.WindowsAzure.Storage.Blob;
     using System;
     using System.IO;
     using System.Text.Json;
@@ -20,9 +21,12 @@
 
         public async Task Execute(GameModelResource game)
         {
-            BlobServiceClient serviceClient = new BlobServiceClient(_blobStorageSettings.ConnecitonString);
-            BlobContainerClient containerClient = serviceClient.GetBlobContainerClient(_blobStorageSettings.GameContainer);
-            BlobClient blobClient = containerClient.GetBlobClient($"{game.Id}.json");
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_blobStorageSettings.ConnecitonString);
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = blobClient.GetContainerReference(_blobStorageSettings.GameContainer);
+            CloudBlockBlob blob = container.GetBlockBlobReference($"{game.Id}.json");
+            blob.Properties.ContentType = "application/json";
+
             using (Stream uploadStream = new MemoryStream())
             {
                 void LoadStreamWithJson(Stream streamToLoad)
@@ -33,7 +37,7 @@
                     streamToLoad.Position = 0;
                 }
                 LoadStreamWithJson(uploadStream);
-                await blobClient.UploadAsync(uploadStream).ConfigureAwait(false);
+                await blob.UploadFromStreamAsync(uploadStream).ConfigureAwait(false);
             }
         }
     }

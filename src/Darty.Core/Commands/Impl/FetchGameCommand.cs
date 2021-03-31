@@ -1,11 +1,13 @@
 ﻿namespace Darty.Core.Commands.Impl
 {
-    using Azure.Storage.Blobs;
     using Darty.Core.Commands.Interfaces;
+    using Darty.Core.Exceptions;
     using Darty.Core.Resources.Data;
     using Darty.Core.Settings;
+    using Microsoft.WindowsAzure.Storage;
+    using Microsoft.WindowsAzure.Storage.Blob;
     using System;
-    using System.IO;
+    using System.Text;
     using System.Text.Json;
     using System.Threading.Tasks;
 
@@ -19,20 +21,20 @@
         }
         public async Task<GameModelResource> Execute(string id)
         {
-            BlobServiceClient serviceClient = new BlobServiceClient(_blobStorageSettings.ConnecitonString);
-            BlobContainerClient containerClient = serviceClient.GetBlobContainerClient(_blobStorageSettings.GameContainer);
-            BlobClient blobClient = containerClient.GetBlobClient($"{id}.json");
-            using (var downloadStream = new MemoryStream())
-            {
-                await blobClient.DownloadToAsync(downloadStream).ConfigureAwait(false);
-                downloadStream.Position = 0;
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_blobStorageSettings.ConnecitonString);
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = blobClient.GetContainerReference(_blobStorageSettings.GameContainer);
+            CloudBlockBlob blob = container.GetBlockBlobReference($"{id}.json");
+            await blob.FetchAttributesAsync().ConfigureAwait(false);
+            var data = new byte[blob.Properties.Length];
+            await blob.DownloadToByteArrayAsync(data, 0).ConfigureAwait(false);
 
-                using (var sr = new StreamReader(downloadStream))
-                {
-                    string gameJson = await sr.ReadToEndAsync().ConfigureAwait(false);
-                    return JsonSerializer.Deserialize<GameModelResource>(gameJson);
-                }
+            if (data is null || data.Length == 0)
+            {
+                throw new GameNotFoundException(id);
             }
+
+            return JsonSerializer.Deserialize<GameModelResource>(Encoding.UTF8.GetString(data));
         }
     }
 }

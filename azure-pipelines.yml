@@ -118,7 +118,7 @@ stages:
         appType: 'functionApp'
         appName: 'darty-api-dev'
         package: '$(Pipeline.Workspace)/drop/Darty.API/Darty.API.zip'
-        AppSettings: '-GameBlobStorageConnectionString "$(darty-api-dev-storage-connection-string)"'
+        AppSettings: '-GameBlobStorageConnectionString "$(darty-api-dev-storage-connection-string)" -AzureSignalRConnectionString "$(darty-signalr-dev-connection-string)"'
 
     - task: ExtractFiles@1
       displayName: 'extract darty-web'
@@ -149,7 +149,7 @@ stages:
         appType: 'functionApp'
         appName: 'darty-api'
         package: '$(Pipeline.Workspace)/drop/Darty.API/Darty.API.zip'
-        AppSettings: '-GameBlobStorageConnectionString "$(darty-api-storage-connection-string)"'
+        AppSettings: '-GameBlobStorageConnectionString "$(darty-api-storage-connection-string)" -AzureSignalRConnectionString "$(darty-signalr-dev-connection-string)"'
 
     - task: ExtractFiles@1
       displayName: 'extract darty-web'

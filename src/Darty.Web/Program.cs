@@ -10,7 +10,7 @@ namespace Darty.Web
     {
         public static async Task Main(string[] args)
         {
-            string baseUrl = "https://dmyrs.com/darty/dev/api";
+            string baseUrl = "https://dmyrs.com/darty/api";
 
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");

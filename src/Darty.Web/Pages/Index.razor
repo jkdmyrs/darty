@@ -16,13 +16,19 @@ Welcome to your new app.
 
     protected override async Task OnInitializedAsync()
     {
+        string gameId = await _apiClient.GenerateGameId().ConfigureAwait(false);
+        Console.WriteLine($"GameId: {gameId}");
+
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(_appSettings.SignalRHubBaseUrl)
+            .WithUrl(_appSettings.SignalRHubBaseUrl, (options) =>
+            {
+                options.Headers.Add("x-ms-signalr-userid", gameId);
+            })
             .Build();
 
-        hubConnection.On(Targets.NewGame, (string id) => Console.WriteLine($"NEW GAME: {id}"));
+        hubConnection.On(Targets.NewGame, () => Console.WriteLine($"NEW GAME"));
 
-        hubConnection.On(Targets.DartThrow, (string id) => Console.WriteLine($"DART THROW: {id}"));
+        hubConnection.On(Targets.DartThrow, () => Console.WriteLine($"DART THROW"));
 
         await hubConnection.StartAsync().ConfigureAwait(false);
     }

@@ -52,8 +52,9 @@ namespace Darty.API.Functions
                 await _createGame.Execute(player1, player2, gameId).ConfigureAwait(false);
                 await signalRMessages.AddAsync(new SignalRMessage
                 {
+                    UserId = gameId, 
                     Target = Targets.NewGame,
-                    Arguments = new[] { gameId }
+                    Arguments = Array.Empty<object>()
                 }).ConfigureAwait(false);
             }
 
@@ -99,8 +100,9 @@ namespace Darty.API.Functions
                 await _dartThrow.Execute(gameId, player, value, multiplier).ConfigureAwait(false);
                 await signalRMessages.AddAsync(new SignalRMessage
                 {
+                    UserId = gameId,
                     Target = Targets.DartThrow,
-                    Arguments = new[] { gameId }
+                    Arguments = Array.Empty<object>()
                 }).ConfigureAwait(false);
             }
 
@@ -119,7 +121,7 @@ namespace Darty.API.Functions
         [FunctionName(FunctionNames.NegotiateSignalR)]
         public SignalRConnectionInfo GetSignalRInfo(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "negotiate")] HttpRequest req, 
-            [SignalRConnectionInfo(HubName = HubNames.GameHub)] SignalRConnectionInfo connectionInfo)
+            [SignalRConnectionInfo(HubName = HubNames.GameHub, UserId = "{headers.x-ms-signalr-userid}")] SignalRConnectionInfo connectionInfo)
         {
             return connectionInfo;
         }

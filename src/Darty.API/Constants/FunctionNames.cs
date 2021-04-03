@@ -8,5 +8,6 @@
         public const string DartThrow = "darty-api-dart-throw";
         public const string GenerateGameId = "darty-api-generate-id";
         public const string NegotiateSignalR = "darty-api-signalr-negotiate";
+        public const string HealthCheck = "darty-api-health";
     }
 }

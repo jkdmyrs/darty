@@ -8,7 +8,7 @@
 
     public class DartyApiClient
     {
-        private readonly string _baseUrl;
+        private string _baseUrl;
         private readonly HttpClient _httpClient;
 
         public DartyApiClient(string baseUrl, HttpClient httpClient)
@@ -16,6 +16,17 @@
             _baseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
             _baseUrl = _baseUrl.Trim('/');
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        }
+
+        public DartyApiClient(HttpClient httpClient)
+        {
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        }
+
+        public void SetBaseUrl(string baseUrl)
+        {
+            _baseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
+            _baseUrl = _baseUrl.Trim('/');
         }
 
         public async Task CreateGame(string gameId, string player1, string player2)

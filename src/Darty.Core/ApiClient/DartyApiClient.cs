@@ -8,7 +8,6 @@
 
     public class DartyApiClient
     {
-        private string _baseUrl;
         private readonly HttpClient _httpClient;
 
         public DartyApiClient(HttpClient httpClient)

@@ -1,35 +1,47 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
-@using Darty.Core
 @using Darty.Core.Resources.Responses
-@inject Darty.Core.ApiClient.DartyApiClient _apiClient
-@inject AppSettings _appSettings;
+@using Darty.Web.Settings
+@using Darty.Web.Hubs
+@inject Darty.Core.ApiClient.DartyApiClient ApiClient
+@inject ClientConfig Config;
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+@if (_game == null)
+{
+    <h1>It's Darty Time!</h1>
+    <p>Use the Darty app to connect to your game.</p>
+    <p style="font-size:xx-large">@_gameId</p>
+}
+else
+{
+    <p>Players: {@_game.Player1.Name} / {@_game.Player2.Name}</p>
+}
 
 @code {
-    private HubConnection hubConnection;
+    private HubConnection _gameHub;
+    private string _gameId;
+    private GameModelResponse _game = null;
 
     protected override async Task OnInitializedAsync()
     {
-        string gameId = await _apiClient.GenerateGameId().ConfigureAwait(false);
-        Console.WriteLine($"GameId: {gameId}");
+        _gameId = await ApiClient.GenerateGameId();
+        Console.WriteLine($"GameId: {_gameId}");
 
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl(_appSettings.SignalRHubBaseUrl, (options) =>
-            {
-                options.Headers.Add("x-ms-signalr-userid", gameId);
-            })
-            .Build();
+        _gameHub = GameHubBuilder.Build(_gameId, NewGame, DartThrow, Config.ApiBaseUrl);
+        await _gameHub.StartAsync();
+    }
 
-        hubConnection.On(Targets.NewGame, () => Console.WriteLine($"NEW GAME"));
+    private async Task NewGame()
+    {
+        Console.WriteLine("NewGame");
+        _game = await ApiClient.GetGameById(_gameId);
+        this.StateHasChanged();
+    }
 
-        hubConnection.On(Targets.DartThrow, () => Console.WriteLine($"DART THROW"));
-
-        await hubConnection.StartAsync().ConfigureAwait(false);
+    private async Task DartThrow()
+    {
+        Console.WriteLine("DartThrow");
+        _game = await ApiClient.GetGameById(_gameId);
+        this.StateHasChanged();
     }
 }

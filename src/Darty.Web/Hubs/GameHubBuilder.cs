@@ -5,20 +5,18 @@
     using System;
     using System.Threading.Tasks;
 
-    public static class GameHubBuidler
+    public static class GameHubBuilder
     {
-        public static HubConnection Build(string hubUrl, string gameId, Func<Task> newGame, Func<Task> dartThrow)
+        public static HubConnection Build(string gameId, Func<Task> newGame, Func<Task> dartThrow, string hubBaseUrl)
         {
-            var hub = new HubConnectionBuilder()
-               .WithUrl(hubUrl, (options) =>
-               {
-                   options.Headers.Add("x-ms-signalr-userid", gameId);
-               })
-               .Build();
-
-            hub.On(Targets.NewGame, () => newGame());
-
-            hub.On(Targets.DartThrow, () => dartThrow());
+            HubConnection hub = new HubConnectionBuilder()
+                   .WithUrl($"{hubBaseUrl}/api", (options) =>
+                   {
+                       options.Headers.Add("x-ms-signalr-userid", gameId);
+                   })
+                   .Build();
+            hub.On(Targets.NewGame, newGame);
+            hub.On(Targets.DartThrow, dartThrow);
             return hub;
         }
     }

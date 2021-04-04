@@ -126,7 +126,7 @@ stages:
         archiveFilePatterns: '$(Pipeline.Workspace)/drop/Darty.Web/Darty.Web.zip'
         destinationFolder: '$(Build.Repository.LocalPath)/dist/'
 
-    - script: 'cp client_config.dev.json client_config.json'
+    - script: 'mv client_config.dev.json client_config.json && rm client_config.*.json'
       workingDirectory: '$(Build.Repository.LocalPath)/dist/wwwroot/config/'
       displayName: 'set client_config'
 
@@ -161,7 +161,7 @@ stages:
         archiveFilePatterns: '$(Pipeline.Workspace)/drop/Darty.Web/Darty.Web.zip'
         destinationFolder: '$(Build.Repository.LocalPath)/dist/'
 
-    - script: 'cp client_config.prod.json client_config.json'
+    - script: 'mv client_config.prod.json client_config.json && rm client_config.*.json'
       workingDirectory: '$(Build.Repository.LocalPath)/dist/wwwroot/config/'
       displayName: 'set client_config'
 

@@ -126,6 +126,10 @@ stages:
         archiveFilePatterns: '$(Pipeline.Workspace)/drop/Darty.Web/Darty.Web.zip'
         destinationFolder: '$(Build.Repository.LocalPath)/dist/'
 
+    - script: 'cp client_config.dev.json client_config.json'
+      workingDirectory: '$(Build.Repository.LocalPath)/dist/wwwroot/config/'
+      displayName: 'set client_config'
+
     - task: AzureStaticWebApp@0
       displayName: 'deploy darty-web-dev'
       inputs:
@@ -156,6 +160,10 @@ stages:
       inputs:
         archiveFilePatterns: '$(Pipeline.Workspace)/drop/Darty.Web/Darty.Web.zip'
         destinationFolder: '$(Build.Repository.LocalPath)/dist/'
+
+    - script: 'cp client_config.prod.json client_config.json'
+      workingDirectory: '$(Build.Repository.LocalPath)/dist/wwwroot/config/'
+      displayName: 'set client_config'
 
     - task: AzureStaticWebApp@0
       displayName: 'deploy darty-web'

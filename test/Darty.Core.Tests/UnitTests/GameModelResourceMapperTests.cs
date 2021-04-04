@@ -1,4 +1,4 @@
-﻿namespace Darty.Core.Tests
+﻿namespace Darty.Core.Tests.UnitTests
 {
     using Darty.Core.Mappers;
     using Darty.Core.Resources.Data;

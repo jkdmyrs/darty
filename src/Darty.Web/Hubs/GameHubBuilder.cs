@@ -9,8 +9,9 @@
     {
         public static HubConnection Build(string gameId, Func<Task> newGame, Func<Task> dartThrow, string hubBaseUrl)
         {
+            var hubUrl = hubBaseUrl.EndsWith("") ? "api" : "/api";
             HubConnection hub = new HubConnectionBuilder()
-                   .WithUrl($"{hubBaseUrl}/api", (options) =>
+                   .WithUrl($"{hubBaseUrl}{hubUrl}", (options) =>
                    {
                        options.Headers.Add("x-ms-signalr-userid", gameId);
                    })

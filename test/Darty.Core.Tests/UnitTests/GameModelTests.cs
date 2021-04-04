@@ -1,4 +1,4 @@
-namespace Darty.Core.Tests
+namespace Darty.Core.Tests.UnitTests
 {
     using Darty.Core.Exceptions;
     using Darty.Core.Models;

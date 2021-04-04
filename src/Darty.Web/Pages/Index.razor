@@ -14,7 +14,8 @@
 }
 else
 {
-    <p>Players: @_game.Player1.Name / @_game.Player2.Name</p>
+    <p>Players: @_game.Player1.Name (@_game.Player1.Score) / @_game.Player2.Name (@_game.Player2.Score)</p>
+    <p>Winner: @_game.HasWinner</p>
     <p>Throws: </p>
     <ul>
         @foreach(var dartThrow in _game.ThrowHistory)

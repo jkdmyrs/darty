@@ -14,7 +14,14 @@
 }
 else
 {
-    <p>Players: {@_game.Player1.Name} / {@_game.Player2.Name}</p>
+    <p>Players: @_game.Player1.Name / @_game.Player2.Name</p>
+    <p>Throws: </p>
+    <ul>
+        @foreach(var dartThrow in _game.ThrowHistory)
+        {
+            <li>@dartThrow.Player - @dartThrow.Value - @dartThrow.Multiplier</li>
+        }
+    </ul>
 }
 
 @code {

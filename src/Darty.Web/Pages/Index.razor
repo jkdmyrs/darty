@@ -35,7 +35,7 @@ else
         _gameId = await ApiClient.GenerateGameId();
         Console.WriteLine($"GameId: {_gameId}");
 
-        _gameHub = GameHubBuilder.Build(_gameId, NewGame, DartThrow, GetGameOnReconnect, Config.ApiBaseUrl);
+        _gameHub = GameHubBuilder.Build(_gameId, NewGame, DartThrow, GetGameOnReconnected, Config.ApiBaseUrl);
         await _gameHub.StartAsync();
     }
 
@@ -53,10 +53,17 @@ else
         this.StateHasChanged();
     }
 
-    private async Task GetGameOnReconnect()
+    private async Task GetGameOnReconnected()
     {
-        Console.WriteLine("Reconnect");
-        _game = await ApiClient.GetGameById(_gameId);
+        Console.WriteLine("Reconnected.");
+        try
+        {
+            _game = await ApiClient.GetGameById(_gameId);
+        }
+        catch
+        {
+            Console.WriteLine("Attempted to fetch game, but it did not exist.");
+        }
         this.StateHasChanged();
     }
 }

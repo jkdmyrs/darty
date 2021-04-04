@@ -25,7 +25,7 @@
         [TestMethod]
         public async Task GameAutomation_OnlyPlayer1ThrowsAndWins()
         {
-            string gameId = "RHBSGN";
+            string gameId = "8RNSFE";
 
             await _apiClient.CreateGame(gameId, "Jack", "Kevin").ConfigureAwait(false);
             Thread.Sleep(1500);

@@ -35,7 +35,7 @@ else
         _gameId = await ApiClient.GenerateGameId();
         Console.WriteLine($"GameId: {_gameId}");
 
-        _gameHub = GameHubBuilder.Build(_gameId, NewGame, DartThrow, Config.ApiBaseUrl);
+        _gameHub = GameHubBuilder.Build(_gameId, NewGame, DartThrow, GetGameOnReconnect, Config.ApiBaseUrl);
         await _gameHub.StartAsync();
     }
 
@@ -49,6 +49,13 @@ else
     private async Task DartThrow()
     {
         Console.WriteLine("DartThrow");
+        _game = await ApiClient.GetGameById(_gameId);
+        this.StateHasChanged();
+    }
+
+    private async Task GetGameOnReconnect()
+    {
+        Console.WriteLine("Reconnect");
         _game = await ApiClient.GetGameById(_gameId);
         this.StateHasChanged();
     }

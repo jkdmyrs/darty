@@ -11,12 +11,12 @@
     using System.Threading.Tasks;
 
     [TestClass]
+    [TestCategory(Categories.Automation)]
     public class DartyGameAutomation
     {
         private DartyApiClient _apiClient;
 
         [TestInitialize]
-        [Ignore("for now, these are manual tests")]
         public void Init()
         {
             _apiClient = new DartyApiClient(new HttpClient { BaseAddress = new Uri("https://dmyrs.com/darty/dev/") });
@@ -25,19 +25,19 @@
         [TestMethod]
         public async Task GameAutomation_OnlyPlayer1ThrowsAndWins()
         {
-            string gameId = "NNSP73";
+            string gameId = "RHBSGN";
 
             await _apiClient.CreateGame(gameId, "Jack", "Kevin").ConfigureAwait(false);
-            Thread.Sleep(2500);
+            Thread.Sleep(1500);
             List<int> dartThrows = new List<int> { 20, 19, 18, 17, 16, 15, 25 };
             // throw a single 20
             await _apiClient.DartThrow(gameId, "Jack", 20, 1).ConfigureAwait(false);
-            Thread.Sleep(2500);
+            Thread.Sleep(1500);
             foreach (int val in dartThrows)
             {
                 // throw triples of each 
                 await _apiClient.DartThrow(gameId, "Jack", val, 3).ConfigureAwait(false);
-                Thread.Sleep(2500);
+                Thread.Sleep(1500);
             }
 
             // get the game and verify

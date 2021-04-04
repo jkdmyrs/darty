@@ -8,6 +8,7 @@ namespace Darty.Core.Tests.UnitTests
     using System.Collections.Generic;
 
     [TestClass]
+    [TestCategory(Categories.Unit)]
     public class GameModelTests
     {
         [TestMethod]

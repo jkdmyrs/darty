@@ -7,6 +7,7 @@
     using System.Collections.Generic;
 
     [TestClass]
+    [TestCategory(Categories.Unit)]
     public class GameModelResourceMapperTests
     {
         [TestMethod]

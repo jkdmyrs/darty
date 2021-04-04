@@ -66,7 +66,7 @@ stages:
       inputs:
         command: 'test'
         projects: '**/Darty.sln'
-        arguments: '-c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Darty.*]*" /p:Exclude="[Darty.*.Tests]*"'
+        arguments: '-c Release --no-build --filter TestCategory=Unit /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Darty.*]*" /p:Exclude="[Darty.*.Tests]*"'
 
     - task: DotNetCoreCLI@2
       displayName: dotnet publish (Darty.API)

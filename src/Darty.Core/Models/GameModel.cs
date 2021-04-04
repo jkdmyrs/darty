@@ -23,7 +23,7 @@
         {
             _player1Name = player1Name;
             _player2Name = player2Name;
-            ThrowHistory = new List<(int Value, int Multiplier, string Player)>();
+            ThrowHistory = gameHistory;
             Id = gameId;
         }
 

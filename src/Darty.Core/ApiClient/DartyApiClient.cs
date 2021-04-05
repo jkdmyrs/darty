@@ -33,6 +33,7 @@
         {
             string requestUrl = "api/id";
             HttpResponseMessage response = await _httpClient.GetAsync(requestUrl).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -40,6 +41,7 @@
         {
             string requestUrl = $"api/game?game={id}";
             HttpResponseMessage response = await _httpClient.GetAsync(requestUrl).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
             string gameJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonSerializer.Deserialize<GameModelResponse>(gameJson, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }

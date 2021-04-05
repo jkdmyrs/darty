@@ -7,7 +7,7 @@
 
     public static class GameHubBuilder
     {
-        public static HubConnection Build(string gameId, Func<Task> newGame, Func<Task> dartThrow, Func<Task> reconnected, string hubBaseUrl)
+        public static HubConnection Build(string gameId, Func<Task> newGame, Func<Task> dartThrow, Func<string, Task> reconnected, string hubBaseUrl)
         {
             var hubUrl = hubBaseUrl.EndsWith("") ? "api" : "/api";
             HubConnection hub = new HubConnectionBuilder()
@@ -19,7 +19,7 @@
                    .Build();
             hub.On(Targets.NewGame, newGame);
             hub.On(Targets.DartThrow, dartThrow);
-            hub.Reconnected += (_) => reconnected();
+            hub.Reconnected += reconnected;
             return hub;
         }
     }

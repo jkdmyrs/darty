@@ -1,6 +1,4 @@
-﻿@inject Darty.Core.ApiClient.DartyApiClient ApiClient
-
-<h1>It's Darty Time!</h1>
+﻿<h1>It's Darty Time!</h1>
 <p>Use the Darty app to connect to your game.</p>
 <p style="font-size:xx-large">@GameId</p>
 
@@ -13,8 +11,5 @@
 
     protected override async Task OnInitializedAsync()
     {
-        GameId = await ApiClient.GenerateGameId();
-        Console.WriteLine($"GameId: {GameId}");
-        await GameIdChanged.InvokeAsync(GameId);
     }
 }

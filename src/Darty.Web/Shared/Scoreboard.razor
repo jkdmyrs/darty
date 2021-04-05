@@ -1,64 +1,12 @@
-﻿@using Microsoft.AspNetCore.SignalR.Client
-@using Darty.Core.Resources.Responses
-@using Darty.Web.Settings
-@using Darty.Web.Hubs
-@inject Darty.Core.ApiClient.DartyApiClient ApiClient
-@inject ClientConfig Config;
+﻿@using Darty.Web.ViewModels
 
-@if (_game == null)
-{
-    <NewGameCode @bind-GameId="_gameId" />
-}
-else
-{
-    <p>Players: @_game.Player1.Name (@_game.Player1.Score) / @_game.Player2.Name (@_game.Player2.Score)</p>
-    <p>Winner: @_game.HasWinner</p>
-    <p>Throws: </p>
-    <ul>
-        @foreach (var dartThrow in _game.ThrowHistory)
-        {
-            <li>@dartThrow.Player - @dartThrow.Value - @dartThrow.Multiplier</li>
-        }
-    </ul>
-}
+<p>Players: @Game.Player1.Name (@Game.Player1.Score) / @Game.Player2.Name (@Game.Player2.Score)</p>
+<p>Winner: @Game.HasWinner</p>
 
 @code {
-    private HubConnection _gameHub;
-    private string _gameId = "...";
-    private GameModelResponse _game = null;
+    [Parameter]
+    public GameViewModel Game { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-
-        async Task NewGame()
-        {
-            Console.WriteLine("NewGame");
-            _game = await ApiClient.GetGameById(_gameId);
-            this.StateHasChanged();
-        }
-
-        async Task DartThrow()
-        {
-            Console.WriteLine("DartThrow");
-            _game = await ApiClient.GetGameById(_gameId);
-            this.StateHasChanged();
-        }
-
-        async Task GetGameOnReconnected(string connectionId)
-        {
-            Console.WriteLine($"Reconnected with connectionId {connectionId}.");
-            try
-            {
-                _game = await ApiClient.GetGameById(_gameId);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Attempted to fetch game, but it did not exist. {e.Message}");
-            }
-            this.StateHasChanged();
-        }
-
-        _gameHub = GameHubBuilder.Build(_gameId, NewGame, DartThrow, GetGameOnReconnected, Config.ApiBaseUrl);
-        await _gameHub.StartAsync();
-    }
+    [Parameter]
+    public EventCallback<GameViewModel> GameChanged { get; set; }
 }

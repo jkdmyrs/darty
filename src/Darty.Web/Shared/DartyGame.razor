@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using Darty.Web.ViewModels
+@using Darty.Web.Settings
+@using Darty.Web.Hubs
+@inject Darty.Core.ApiClient.DartyApiClient ApiClient
+@inject ClientConfig Config;
+
+@if (_game == null)
+{
+    <GameCode @bind-GameId="_gameId" />
+}
+else
+{
+    <Scoreboard @bind-Game="_game" />
+}
+
+@code {
+    private HubConnection _gameHub;
+    private string _gameId = "...";
+    private GameViewModel _game = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        async Task NewGame()
+        {
+            Console.WriteLine("NewGame");
+            var gameResponse = await ApiClient.GetGameById(_gameId);
+            _game = new GameViewModel(gameResponse);
+            this.StateHasChanged();
+        }
+
+        async Task DartThrow()
+        {
+            Console.WriteLine("DartThrow");
+            var gameResponse = await ApiClient.GetGameById(_gameId);
+            _game = new GameViewModel(gameResponse);
+            this.StateHasChanged();
+        }
+
+        async Task Reconnected(string connectionId)
+        {
+            Console.WriteLine($"Reconnected with connectionId {connectionId}.");
+            try
+            {
+                var gameResponse = await ApiClient.GetGameById(_gameId);
+                _game = new GameViewModel(gameResponse);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Attempted to fetch game, but it did not exist. {e.Message}");
+            }
+            this.StateHasChanged();
+        }
+
+        _gameId = await ApiClient.GenerateGameId();
+        _gameHub = GameHubBuilder.Build(_gameId, NewGame, DartThrow, Reconnected, Config.ApiBaseUrl);
+        await _gameHub.StartAsync();
+    }
+}

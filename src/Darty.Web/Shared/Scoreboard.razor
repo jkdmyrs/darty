@@ -9,9 +9,12 @@
 <table>
     @foreach (int dart in _darts)
     {
-        <ScoreboardRow @bind-RowDetailsPlayer1="Game.Player1.GetScoreDetailsForValue(dart)"
-                       @bind-RowDetailsPlayer2="Game.Player2.GetScoreDetailsForValue(dart)"
-                       @bind-DartValue="dart" />
+        int dartValue = dart;
+        var player1 = @Game.Player1.GetScoreDetailsForValue(dart);
+        var player2 = @Game.Player2.GetScoreDetailsForValue(dart);
+        <ScoreboardRow @bind-RowDetailsPlayer1="@player1"
+                       @bind-RowDetailsPlayer2="@player2"
+                       @bind-DartValue="@dartValue" />
     }
 </table>
 

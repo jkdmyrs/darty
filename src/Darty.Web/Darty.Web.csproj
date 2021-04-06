@@ -17,5 +17,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Darty.Core\Darty.Core.csproj" />
   </ItemGroup>
-
 </Project>

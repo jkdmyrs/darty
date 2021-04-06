@@ -1,4 +1,4 @@
-﻿namespace Darty.Core.Tests
+﻿namespace Darty.Tests.Shared
 {
     public static class Categories
     {

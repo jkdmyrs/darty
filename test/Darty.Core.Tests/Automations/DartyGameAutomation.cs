@@ -2,6 +2,7 @@
 {
     using Darty.Core.ApiClient;
     using Darty.Core.Resources.Responses;
+    using Darty.Tests.Shared;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;

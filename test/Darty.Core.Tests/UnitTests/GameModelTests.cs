@@ -2,6 +2,7 @@ namespace Darty.Core.Tests.UnitTests
 {
     using Darty.Core.Exceptions;
     using Darty.Core.Models;
+    using Darty.Tests.Shared;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;

@@ -1,9 +1,23 @@
 ﻿@using Darty.Web.ViewModels
 
-<p>Players: @Game.Player1.Name (@Game.Player1.Score) / @Game.Player2.Name (@Game.Player2.Score)</p>
-<p>Winner: @Game.HasWinner</p>
+<p>@Game.Player1.Name (@Game.Player1.Score) / @Game.Player2.Name (@Game.Player2.Score)</p>
+@if (@Game.HasWinner)
+{
+    <p>@Game.WinnerName Wins!</p>
+}
+
+<table>
+    @foreach (int dart in _darts)
+    {
+        <ScoreboardRow @bind-RowDetailsPlayer1="Game.Player1.GetScoreDetailsForValue(dart)"
+                       @bind-RowDetailsPlayer2="Game.Player2.GetScoreDetailsForValue(dart)"
+                       @bind-DartValue="dart" />
+    }
+</table>
 
 @code {
+    private readonly List<int> _darts = new List<int> { 20, 19, 18, 17, 16, 15, 25 };
+
     [Parameter]
     public GameViewModel Game { get; set; }
 

@@ -1,0 +1,27 @@
+﻿<tr>
+    <td>@RowDetailsPlayer1</td>
+    <td>@_dartValueDisplay</td>
+    <td>@RowDetailsPlayer2</td>
+</tr>
+
+@code {   
+    private string _dartValueDisplay => DartValue == 25 ? "B" : DartValue.ToString();
+
+    [Parameter]
+    public int DartValue { get; set; }
+
+    [Parameter]
+    public EventCallback<int> DartValueChanged { get; set; }
+
+    [Parameter]
+    public (bool IsClosed, int HitCount) RowDetailsPlayer1 { get; set; }
+
+    [Parameter]
+    public EventCallback<(bool IsClosed, int HitCount)> RowDetailsPlayer1Changed { get; set; }
+
+    [Parameter]
+    public (bool IsClosed, int HitCount) RowDetailsPlayer2 { get; set; }
+
+    [Parameter]
+    public EventCallback<(bool IsClosed, int HitCount)> RowDetailsPlayer2Changed { get; set; }
+}

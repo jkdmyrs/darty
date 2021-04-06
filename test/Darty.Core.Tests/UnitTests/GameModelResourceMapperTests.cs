@@ -2,6 +2,7 @@
 {
     using Darty.Core.Mappers;
     using Darty.Core.Resources.Data;
+    using Darty.Tests.Shared;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Collections.Generic;

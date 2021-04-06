@@ -1,5 +1,24 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.scoreboard {
+    font-size: 55px;
+}
+
+.player-score {
+}
+
+.scoreboard table {
+    border-style: hidden;
+}
+
+.scoreboard table td {
+    border: 1px solid white;
+    text-align: center;
+    vertical-align: middle;
+    height: 85px;
+    width: 85px;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background-color: #000000;
@@ -153,6 +172,15 @@ app {
 }
 
 @media (min-width: 768px) {
+    .scoreboard {
+        font-size: 75px;
+    }
+
+    .scoreboard table td {
+        height: 100px;
+        width: 100px;
+    }
+
     app {
         flex-direction: row;
     }

@@ -1,0 +1,14 @@
+﻿@using Darty.Web.ViewModels 
+
+<div class="player-score">
+    <p>@Player.Name</p>
+    <p>@Player.Score</p>
+</div>
+
+@code {
+    [Parameter]
+    public PlayerViewModel Player { get; set; }
+
+    [Parameter]
+    public EventCallback<PlayerViewModel> PlayerChanged { get; set; }
+}

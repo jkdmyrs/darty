@@ -1,22 +1,36 @@
 ﻿@using Darty.Web.ViewModels
 
-<p>@Game.Player1.Name (@Game.Player1.Score) / @Game.Player2.Name (@Game.Player2.Score)</p>
+<div class="row">
+    <div class="col-6" style="text-align:left">
+        <PlayerScore @bind-Player="@Game.Player1" />
+    </div>
+    <div class="col-6" style="text-align:right">
+        <PlayerScore @bind-Player="@Game.Player2" />
+    </div>
+</div>
+
 @if (@Game.HasWinner)
 {
     <p>@Game.WinnerName Wins!</p>
 }
 
-<table>
-    @foreach (int dart in _darts)
-    {
-        int dartValue = dart;
-        var player1 = @Game.Player1.GetScoreDetailsForValue(dart);
-        var player2 = @Game.Player2.GetScoreDetailsForValue(dart);
-        <ScoreboardRow @bind-RowDetailsPlayer1="@player1"
-                       @bind-RowDetailsPlayer2="@player2"
-                       @bind-DartValue="@dartValue" />
-    }
-</table>
+<div class="row justify-content-center">
+    <div class="col-auto">
+        <div class="scoreboard">
+            <table>
+                @foreach (int dart in _darts)
+                {
+                    int dartValue = dart;
+                    var player1 = @Game.Player1.GetScoreDetailsForValue(dart);
+                    var player2 = @Game.Player2.GetScoreDetailsForValue(dart);
+                    <ScoreboardRow @bind-RowDetailsPlayer1="@player1"
+                                   @bind-RowDetailsPlayer2="@player2"
+                                   @bind-DartValue="@dartValue" />
+                }
+            </table>
+        </div>
+    </div>
+</div>
 
 @code {
     private readonly List<int> _darts = new List<int> { 20, 19, 18, 17, 16, 15, 25 };

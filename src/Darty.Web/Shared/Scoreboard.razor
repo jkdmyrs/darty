@@ -1,19 +1,5 @@
 ﻿@using Darty.Web.ViewModels
 
-<div class="row">
-    <div class="col-6" style="text-align:left">
-        <PlayerScore @bind-Player="@Game.Player1" />
-    </div>
-    <div class="col-6" style="text-align:right">
-        <PlayerScore @bind-Player="@Game.Player2" />
-    </div>
-</div>
-
-@if (@Game.HasWinner)
-{
-    <p>@Game.WinnerName Wins!</p>
-}
-
 <div class="row justify-content-center">
     <div class="col-auto">
         <div class="scoreboard">
@@ -31,6 +17,20 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-6 player-1-score">
+        <PlayerScore @bind-Player="@Game.Player1" />
+    </div>
+    <div class="col-6 player-2-score">
+        <PlayerScore @bind-Player="@Game.Player2" />
+    </div>
+</div>
+
+@if (@Game.HasWinner)
+{
+    <p>@Game.WinnerName Wins!</p>
+}
 
 @code {
     private readonly List<int> _darts = new List<int> { 20, 19, 18, 17, 16, 15, 25 };
